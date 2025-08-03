@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS tmp_sources;
 
 CREATE TEMP TABLE tmp_sources AS 
 (
-	SELECT  
+	SELECT
 		order_id,
 	    order_created_date,
 	    order_completion_date,
