@@ -21,5 +21,4 @@ CREATE TABLE IF NOT EXISTS dwh.customer_report_datamart (
     count_order_not_done BIGINT NOT NULL,
     report_period VARCHAR NOT NULL,
     CONSTRAINT customer_report_datamart_pk PRIMARY KEY (id)
-    -- add FK for top_craftsman_id to the d_craftsman table?
 );
