@@ -47,6 +47,8 @@ dwh_delta_insert_result AS (
 	    T4.count_order AS count_order,
 	    T4.avg_price_order AS avg_price_order,
 	    T4.median_time_order_completed AS median_time_order_completed,
+		T4.product_type AS top_product_category,
+		T4.craftsman_id AS top_craftsman_id,
 	    T4.count_order_created AS count_order_created,
 	    T4.count_order_in_progress AS count_order_in_progress,
 	    T4.count_order_delivery AS count_order_delivery,
@@ -102,7 +104,7 @@ dwh_delta_insert_result AS (
     WHERE T4.rank_count_product = 1 AND T4.rn_count_order_per_craftsman = 1
     ORDER BY report_period
 ),
-dwh_delta_update_result AS ( -- делаем перерасчёт для существующих записей витринs, так как данные обновились за отчётные периоды. Логика похожа на insert, но нужно достать конкретные данные из DWH
+dwh_delta_update_result AS ( 
     SELECT 
     	T4.customer_id AS customer_id,
 	    T4.customer_name AS customer_name,
@@ -114,6 +116,8 @@ dwh_delta_update_result AS ( -- делаем перерасчёт для сущ�
 	    T4.count_order AS count_order,
 	    T4.avg_price_order AS avg_price_order,
 	    T4.median_time_order_completed AS median_time_order_completed,
+		T4.product_type AS top_product_category,
+		T4.craftsman_id AS top_craftsman_id,
 	    T4.count_order_created AS count_order_created,
 	    T4.count_order_in_progress AS count_order_in_progress,
 	    T4.count_order_delivery AS count_order_delivery,
@@ -188,8 +192,8 @@ dwh_delta_update_result AS ( -- делаем перерасчёт для сущ�
     WHERE T4.rank_count_product = 1 and T4.rn_count_order_per_craftsman = 1
     ORDER BY report_period
 ),
-insert_delta AS ( -- выполняем insert новых расчитанных данных для витрины 
-    INSERT INTO dwh.craftsman_report_datamart (
+insert_delta AS ( 
+    INSERT INTO dwh.customer_report_datamart (
         customer_id,
         customer_name,
         customer_address,
@@ -201,6 +205,7 @@ insert_delta AS ( -- выполняем insert новых расчитанных
         avg_price_order, 
         median_time_order_completed,
         top_product_category, 
+		top_craftsman_id,
         count_order_created, 
         count_order_in_progress, 
         count_order_delivery, 
@@ -220,6 +225,7 @@ insert_delta AS ( -- выполняем insert новых расчитанных
         avg_price_order, 
         median_time_order_completed,
         top_product_category, 
+		top_craftsman_id,
         count_order_created, 
         count_order_in_progress, 
         count_order_delivery, 
@@ -227,5 +233,48 @@ insert_delta AS ( -- выполняем insert новых расчитанных
         count_order_not_done, 
         report_period
 	FROM dwh_delta_insert_result
+),
+update_delta AS (
+    UPDATE dwh.customer_report_datamart SET
+        customer_name = updates.customer_name, 
+        customer_address = updates.customer_address, 
+        customer_birthday = updates.customer_birthday, 
+        customer_email = updates.customer_email, 
+        customer_spend = updates.customer_spend, 
+        platform_money = updates.platform_money, 
+        count_order = updates.count_order, 
+        avg_price_order = updates.avg_price_order, 
+        median_time_order_completed = updates.median_time_order_completed, 
+        top_product_category = updates.top_product_category, 
+        top_craftsman_id = updates.top_craftsman_id,
+        count_order_created = updates.count_order_created, 
+        count_order_in_progress = updates.count_order_in_progress, 
+        count_order_delivery = updates.count_order_delivery, 
+        count_order_done = updates.count_order_done,
+        count_order_not_done = updates.count_order_not_done, 
+        report_period = updates.report_period
+    FROM (
+        SELECT 
+            customer_id,
+	        customer_name,
+	        customer_address,
+	        customer_birthday, 
+	        customer_email, 
+	        customer_spend, 
+	        platform_money, 
+	        count_order, 
+	        avg_price_order, 
+	        median_time_order_completed,
+	        top_product_category, 
+			top_craftsman_id,
+	        count_order_created, 
+	        count_order_in_progress, 
+	        count_order_delivery, 
+	        count_order_done, 
+	        count_order_not_done, 
+	        report_period 
+        FROM dwh_delta_update_result
+    ) AS updates
+    WHERE dwh.customer_report_datamart.customer_id = updates.customer_id
 )
 SELECT 'increment datamart';
