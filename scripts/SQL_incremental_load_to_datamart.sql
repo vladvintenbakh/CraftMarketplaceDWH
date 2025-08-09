@@ -187,5 +187,45 @@ dwh_delta_update_result AS ( -- делаем перерасчёт для сущ�
     ) AS T4 
     WHERE T4.rank_count_product = 1 and T4.rn_count_order_per_craftsman = 1
     ORDER BY report_period
+),
+insert_delta AS ( -- выполняем insert новых расчитанных данных для витрины 
+    INSERT INTO dwh.craftsman_report_datamart (
+        customer_id,
+        customer_name,
+        customer_address,
+        customer_birthday, 
+        customer_email, 
+        customer_spend, 
+        platform_money, 
+        count_order, 
+        avg_price_order, 
+        median_time_order_completed,
+        top_product_category, 
+        count_order_created, 
+        count_order_in_progress, 
+        count_order_delivery, 
+        count_order_done, 
+        count_order_not_done, 
+        report_period
+    )
+    SELECT 
+        customer_id,
+        customer_name,
+        customer_address,
+        customer_birthday, 
+        customer_email, 
+        customer_spend, 
+        platform_money, 
+        count_order, 
+        avg_price_order, 
+        median_time_order_completed,
+        top_product_category, 
+        count_order_created, 
+        count_order_in_progress, 
+        count_order_delivery, 
+        count_order_done, 
+        count_order_not_done, 
+        report_period
+	FROM dwh_delta_insert_result
 )
 SELECT 'increment datamart';
