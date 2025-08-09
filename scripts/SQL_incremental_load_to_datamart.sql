@@ -276,5 +276,16 @@ update_delta AS (
         FROM dwh_delta_update_result
     ) AS updates
     WHERE dwh.customer_report_datamart.customer_id = updates.customer_id
+),
+insert_load_date AS ( 
+    INSERT INTO dwh.load_dates_customer_report_datamart (
+        load_dttm
+    )
+    SELECT GREATEST(
+    	COALESCE(MAX(craftsman_load_dttm), NOW()), 
+        COALESCE(MAX(customers_load_dttm), NOW()), 
+        COALESCE(MAX(products_load_dttm), NOW())
+    ) 
+    FROM dwh_delta
 )
 SELECT 'increment datamart';
