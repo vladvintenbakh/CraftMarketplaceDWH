@@ -101,5 +101,5 @@ dwh_delta_insert_result AS (
     ) AS T4
     WHERE T4.rank_count_product = 1 AND T4.rn_count_order_per_craftsman = 1
     ORDER BY report_period
-)
+) 
 SELECT 'increment datamart';
