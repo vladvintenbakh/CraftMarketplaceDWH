@@ -91,7 +91,3 @@ source* → [staging temps] → dwh.d_* (customers, craftsmen, products)
 - Scripts are **re-runnable**: DDL uses `DROP IF EXISTS` and loads use `MERGE`.
 - If your Postgres version doesn’t support `MERGE`, replace with `INSERT … ON CONFLICT` / `UPDATE` patterns.
 - Keep source-system primary keys stable across runs.
-
---
-
-Maintained as part of a data engineering sprint. PRs welcome.
