@@ -5,13 +5,12 @@ This repo contains pure SQL to build a small **data warehouse (DWH)** and a **cu
 ## What’s inside
 
 ```
-de-start-project-sprint-8-2024-main/
-  README.md
-  scripts/
-    DDL_customer_report_datamart.sql
-    DDL_load_dates_customer_report_datamart.sql
-    SQL_incremental_load_to_datamart.sql
-    SQL_load_to_dwh.sql
+README.md
+scripts/
+  DDL_customer_report_datamart.sql
+  DDL_load_dates_customer_report_datamart.sql
+  SQL_incremental_load_to_datamart.sql
+  SQL_load_to_dwh.sql
 ```
 
 **Schemas & tables used**
